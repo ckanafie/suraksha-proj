@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 gender_choices = (
     ('M', 'Male'),
@@ -9,33 +10,27 @@ gender_choices = (
 )
 
 class Cust(models.Model):
-    cust_id = models.IntegerField()
-    name = models.CharField(max_length=30)
-    gender = models.CharField(max_length=1, choices=gender_choices)
-    dob = models.DateField()
-    mobile = models.CharField(max_length=10)
-    email = models.EmailField(max_length=100)
-    address = models.CharField(max_length=100)
-    password = models.CharField(max_length=100)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    gender = models.CharField(max_length=1, choices=gender_choices, blank=True)
+    dob = models.DateField(blank=True)
+    mobile = models.CharField(max_length=10, blank=True)
+    address = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return self.name
+        return str(self.user.username)
 
 class Drvr(models.Model):
-    cab_id = models.IntegerField()
-    name = models.CharField(max_length=30)
-    gender = models.CharField(max_length=1, choices=gender_choices)
-    dob = models.DateField()
-    mobile = models.CharField(max_length=10)
-    email = models.EmailField(max_length=100)
-    address = models.CharField(max_length=100)
-    password = models.CharField(max_length=100)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    gender = models.CharField(max_length=1, choices=gender_choices, blank=True)
+    dob = models.DateField(blank=True)
+    mobile = models.CharField(max_length=10, blank=True)
+    address = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
-        return self.name
+        return (self.user.username)
 
 class book(models.Model):
-    cust_id = models.ForeignKey(Cust, on_delete=models.CASCADE)
-    cab_id = models.ForeignKey(Drvr, on_delete=models.CASCADE)
+    cust = models.ForeignKey('Cust', on_delete=models.CASCADE)
+    drvr = models.ForeignKey('Drvr', on_delete=models.CASCADE)
     src = models.CharField(max_length=100)
     dst = models.CharField(max_length=100)
